@@ -1,0 +1,57 @@
+﻿<Window x:Class="HalconMVVMStarter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="420" Width="525"         
+        xmlns:my="clr-namespace:HalconDotNet;assembly=halcondotnet"               
+        x:Name="myWindow">
+    <Grid Name="MainGrid" 
+          ShowGridLines="False">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="27" />
+            <RowDefinition Height="284*" />
+            <RowDefinition Height="18" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="388*"/>
+        </Grid.ColumnDefinitions>        
+        <DockPanel LastChildFill="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="stackPanel1"  
+                    Background ="CadetBlue" Grid.RowSpan="2">
+            <Button DockPanel.Dock="Top" Content="Load Image" Height="31" Name="buttonLoadImage" 
+                    Click="ButtonLoadImage_Click" 
+                    Margin="3" HorizontalContentAlignment="Center" >
+            </Button>
+            <DataGrid AutoGenerateColumns="True" Height="181" Name="dataGrid1" DockPanel.Dock="Bottom" Margin="3,0,3,3"
+                      CanUserAddRows="False" ColumnWidth="*">                
+            </DataGrid>
+            <Button Name="ProcessButton" Content="Process" DockPanel.Dock="Top" Height="35" Margin="3" VerticalAlignment="Top" Width="194"
+                    HorizontalContentAlignment="Center"/>
+        </DockPanel>
+        <Border Grid.Column="1" Grid.Row="1" Name="ImageBorder" >
+            <my:HWindowControlWPF Name="hWindowControlWPF1"/>
+        </Border>        
+        <DockPanel Grid.Column="1" HorizontalAlignment="Stretch" Name="toolBarPanel1" VerticalAlignment="Stretch" 
+                   Background ="White" Width="Auto" Height="27" >
+            <ComboBox Name="comboboxZoom" SelectedIndex="10" Width="70" HorizontalAlignment="Left" Margin="0,0,0,0"> 
+                <ComboBoxItem Content="6400%"></ComboBoxItem>
+                <ComboBoxItem Content="3200%"></ComboBoxItem>
+                <ComboBoxItem Content="1600%"></ComboBoxItem>
+                <ComboBoxItem Content="800%"></ComboBoxItem>
+                <ComboBoxItem Content="400%"></ComboBoxItem>
+                <ComboBoxItem Content="200%"></ComboBoxItem>
+                <ComboBoxItem Content="100%"></ComboBoxItem>
+                <ComboBoxItem Content="75%"></ComboBoxItem>
+                <ComboBoxItem Content="50%"></ComboBoxItem>
+                <ComboBoxItem Content="33%"></ComboBoxItem>
+                <ComboBoxItem Content="Fit"></ComboBoxItem>
+            </ComboBox>            
+            <TextBlock 
+                Text="{Binding Path=LoadImageVM.FileName, UpdateSourceTrigger=PropertyChanged}"                
+                Background="White" Name="TextBlockFileName" HorizontalAlignment="Stretch" 
+                Width="Auto" Margin="0,4,0,0" />
+        </DockPanel>
+        <Label Content="{Binding Path=StatusText, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" 
+               Height="20" HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="label1" VerticalAlignment="Top" 
+               Background="LightGreen" FontSize="12" Padding="5,2,5,5" />
+    </Grid> 
+</Window>
