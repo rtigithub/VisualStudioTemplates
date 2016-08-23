@@ -1,0 +1,2 @@
+# VisualStudioTemplates
+Visual Studio Templates
