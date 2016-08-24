@@ -8,6 +8,7 @@ namespace HalconMVVMStarter.ViewModels
 {
     using System;
     using System.Reactive.Linq;
+    using System.Threading.Tasks;
     using HalconDotNet;
     using Model;
     using ReactiveUI;
@@ -16,7 +17,7 @@ namespace HalconMVVMStarter.ViewModels
     /// <summary>
     /// LoadProcessViewModel class for image load processing.
     /// </summary>
-    public class LoadProcessViewModel : ProcessViewModelBase<MainViewModel, LoadImageProcessor>
+    public class LoadProcessViewModel : ProcessViewModelBase<DemoMainViewModel, LoadImageProcessor>
     {
         #region Private Declarations
 

@@ -78,7 +78,7 @@ namespace HalconMVVMStarter.Model
             {
                 if (disposing)
                 {
-                    //// Dispose of managed resorces here. 
+                    //// Dispose of managed resorces here.                     
                 }
 
                 //// Dispose of unmanaged resorces here.

@@ -9,11 +9,8 @@ namespace HalconMVVMStarter.ViewModels
     using System;
     using System.Data;
     using System.Reactive.Linq;
-    using System.Threading.Tasks;    
-    using HalconDotNet;
     using Model;
     using ReactiveUI;
-    using RTI.DisplayUtilities;
 
     /// <summary>
     /// DemoMainViewModel class is a Demo MainViewModel. 
@@ -29,15 +26,20 @@ namespace HalconMVVMStarter.ViewModels
 
         //// Add additional view model fields for each view model owned by the main view model class.
 
-        ///// <summary>
-        ///// The child view model for processing boundaries.
-        ///// </summary>
-        //private BoundaryProcessViewModel boundaryProcessVM;
+        /// <summary>
+        /// The child view model for processing boundaries.
+        /// </summary>
+        private BoundaryProcessViewModel boundaryProcessVM;
 
-        ///// <summary>
-        ///// The child view model for changing the display color.
-        ///// </summary>
-        //private ChangeColorProcessViewModel changeColorVM;
+        /// <summary>
+        /// The child view model for changing the display color.
+        /// </summary>
+        private ChangeColorProcessViewModel changeColorVM;
+
+        /// <summary>
+        /// A boolean value indicating that the class is disposed. 
+        /// </summary>
+        private bool isDisposed = false;
 
         #endregion Private Declarations
 
@@ -53,14 +55,14 @@ namespace HalconMVVMStarter.ViewModels
             this.loadImageVM = new LoadProcessViewModel(this, new LoadImageProcessor());
 
             //// Instatiate additional view models by passing "this" and an instance of the processor class model for the view model.
-            //this.boundaryProcessVM = new BoundaryProcessViewModel(this, new BoundaryProcessor());
+            this.boundaryProcessVM = new BoundaryProcessViewModel(this, new BoundaryProcessor());
 
-            //this.changeColorVM = new ChangeColorProcessViewModel(this, new ChangeColorProcessor());
-
-            this.LastAppState = 1;
+            this.changeColorVM = new ChangeColorProcessViewModel(this, new ChangeColorProcessor());
+                        
 
             this.DisposeCollection.Add(this.WhenAnyValue(x => x.AppState)
                 .Where(x => x != 0)
+                .StartWith(1)
                 .Subscribe(x => this.LastAppState = x));
         }
 
@@ -97,27 +99,27 @@ namespace HalconMVVMStarter.ViewModels
             }
         }
 
-        ///// <summary>
-        ///// Gets the boundaryProcessVM. 
-        ///// </summary>
-        //public BoundaryProcessViewModel BoundaryProcessVM
-        //{
-        //    get 
-        //    {
-        //       return this.boundaryProcessVM; 
-        //    }
-        //}
+        /// <summary>
+        /// Gets the boundaryProcessVM. 
+        /// </summary>
+        public BoundaryProcessViewModel BoundaryProcessVM
+        {
+            get 
+            {
+               return this.boundaryProcessVM; 
+            }
+        }
 
-        ///// <summary>
-        ///// Gets the changeColorVM. 
-        ///// </summary>
-        //public ChangeColorProcessViewModel ChangeColorProcessVM
-        //{
-        //    get 
-        //    {
-        //       return this.changeColorVM; 
-        //    }
-        //}
+        /// <summary>
+        /// Gets the changeColorVM. 
+        /// </summary>
+        public ChangeColorProcessViewModel ChangeColorProcessVM
+        {
+            get 
+            {
+               return this.changeColorVM; 
+            }
+        }
 
         #endregion Properties
 
@@ -134,7 +136,7 @@ namespace HalconMVVMStarter.ViewModels
         /// <summary>
         /// Sets up the data set for output. This is only for example and should be changed as needed. 
         /// </summary>
-        protected override void SetUpDataSet()
+        protected sealed override void SetUpDataSet()
         {
             this.ProcessingResultsDataSet = new DataSet();
 
@@ -162,10 +164,10 @@ namespace HalconMVVMStarter.ViewModels
                 case 0:
                     break;
                 case 1:
-                    //this.MenuItems.Add(new MenuItemVM("Display in red.", this.changeColorVM.Command));
+                    this.MenuItems.Add(new MenuItemVM("Display in red.", this.changeColorVM.Command));
                     break;
                 case 2:
-                    //this.MenuItems.Add(new MenuItemVM("Display in green.", this.changeColorVM.Command));
+                    this.MenuItems.Add(new MenuItemVM("Display in green.", this.changeColorVM.Command));
                     break;
             }
         }
@@ -176,30 +178,30 @@ namespace HalconMVVMStarter.ViewModels
         /// <param name="disposing">A boolean value indicating whether the class is being disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
-                    ////// Dispose of managed resorces here. 
-                    //if (this.changeColorVM != null)
-                    //{
-                    //    this.changeColorVM.Dispose();
-                    //}
+                    //// Dispose of managed resorces here. 
+                    if (this.changeColorVM != null)
+                    {
+                        this.changeColorVM.Dispose();
+                    }
 
                     if (this.loadImageVM != null)
                     {
                         this.loadImageVM.Dispose();
                     }
 
-                    //if (this.boundaryProcessVM != null)
-                    //{
-                    //    this.boundaryProcessVM.Dispose();
-                    //}
+                    if (this.boundaryProcessVM != null)
+                    {
+                        this.boundaryProcessVM.Dispose();
+                    }
                 }
 
                 //// Dispose of unmanaged resorces here.
 
-                this.IsDisposed = true;
+                this.isDisposed = true;
             }
 
             // Call base.Dispose, passing parameter. 

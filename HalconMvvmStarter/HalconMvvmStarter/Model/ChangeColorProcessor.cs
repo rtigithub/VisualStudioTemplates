@@ -7,8 +7,7 @@
 namespace HalconMVVMStarter.Model
 {
     using System;
-    using HalconDotNet;
-    using ReactiveUI;
+    using Rti.ViewRoiCore; 
 
     /// <summary>
     /// Processor class for changing the display color and redisplaying overlays.  
@@ -16,21 +15,16 @@ namespace HalconMVVMStarter.Model
     public class ChangeColorProcessor : ProcessorBase
     {
         #region Private Declarations
+       
+        /// <summary>
+        /// Stores the current display color value. For demonstration only. To be modified. 
+        /// </summary>
+        private HalconColors currentDisplayColor = HalconColors.Green;
 
         /// <summary>
-        /// Stores the string for passing a green color. For demonstration only. To be modified. 
+        /// Stores a value indicating whether the class has been disposed. 
         /// </summary>
-        private readonly string green = "green";
-
-        /// <summary>
-        /// Stores the string for passing a red color. For demonstration only. To be modified. 
-        /// </summary>
-        private readonly string red = "red";
-
-        /// <summary>
-        /// Stores the current display color string. For demonstration only. To be modified. 
-        /// </summary>
-        private string currentDisplayColor;
+        private bool isDisposed = false;
 
         #endregion Private Declarations
 
@@ -41,8 +35,7 @@ namespace HalconMVVMStarter.Model
         /// </summary>
         public ChangeColorProcessor()
             : base()
-        {
-            this.currentDisplayColor = this.green;
+        {            
         }
 
         #endregion Constructors
@@ -60,16 +53,16 @@ namespace HalconMVVMStarter.Model
         /// <summary>
         /// Gets or sets the current display color.
         /// </summary>
-        public string CurrentDisplayColor
+        public HalconColors CurrentDisplayColor
         {
-            get 
-            { 
-                return this.currentDisplayColor; 
+            get
+            {
+                return this.currentDisplayColor;
             }
 
-            set 
-            { 
-                this.currentDisplayColor = value; 
+            set
+            {
+                this.currentDisplayColor = value;
             }
         }
 
@@ -123,7 +116,7 @@ namespace HalconMVVMStarter.Model
         /// <param name="disposing">A boolean value indicating whether the class is being disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
@@ -132,7 +125,7 @@ namespace HalconMVVMStarter.Model
 
                 //// Dispose of unmanaged resorces here.
 
-                this.IsDisposed = true;
+                this.isDisposed = true;
             }
 
             // Call base.Dispose, passing parameter. 
@@ -148,13 +141,13 @@ namespace HalconMVVMStarter.Model
         /// </summary>
         private void ChangeDisplayColor()
         {
-            if (this.currentDisplayColor == this.green)
+            if (this.currentDisplayColor == HalconColors.Green)
             {
-                this.currentDisplayColor = this.red;
+                this.currentDisplayColor = HalconColors.Red;
             }
             else
             {
-                this.currentDisplayColor = this.green;
+                this.currentDisplayColor = HalconColors.Green;
             }
         }
 

@@ -7,10 +7,10 @@
 namespace HalconMVVMStarter.ViewModels
 {
     using System;
-    using System.Threading.Tasks;
     using Model;
     using ReactiveUI;
-    using RTI.DisplayUtilities;
+    using Rti.DisplayUtilities;
+    using Rti.ViewRoiCore;
 
     /// <summary>
     /// ChangeColorProcessViewModel class for change color processing. 
@@ -24,6 +24,10 @@ namespace HalconMVVMStarter.ViewModels
         /// </summary>
         private ObservableAsPropertyHelper<ProcessingResult> processingResults;
 
+        /// <summary>
+        /// A boolean value indicating that the class is disposed. 
+        /// </summary>
+        private bool isDisposed = false;
         #endregion Private Declarations
 
         #region Constructors
@@ -68,7 +72,7 @@ namespace HalconMVVMStarter.ViewModels
         /// <summary>
         /// Gets the current display color.
         /// </summary>
-        public string CurrentDisplayColor
+        public HalconColors CurrentDisplayColor
         {
             get 
             { 
@@ -105,11 +109,11 @@ namespace HalconMVVMStarter.ViewModels
             tempDC.ClearDisplayFirst = true;
 
             tempDC.AddDisplayObject(this.MainViewModelRef.LoadImageVM.Image.CopyObj(1, -1));
-            //tempDC.AddDisplayObject(
-            //    this.MainViewModelRef.BoundaryProcessVM.WaferRegion.CopyObj(1, -1),
-            //    this.CurrentDisplayColor,
-            //    1,
-            //    "margin");
+            tempDC.AddDisplayObject(
+                this.MainViewModelRef.BoundaryProcessVM.WaferRegion.CopyObj(1, -1),
+                this.CurrentDisplayColor,
+                1,
+                DrawModes.Margin);  //"margin");
 
             return tempDC;
         }
@@ -120,7 +124,7 @@ namespace HalconMVVMStarter.ViewModels
         /// <param name="disposing">A boolean value indicating whether the class is being disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
@@ -129,7 +133,7 @@ namespace HalconMVVMStarter.ViewModels
 
                 //// Dispose of unmanaged resorces here.
 
-                this.IsDisposed = true;
+                this.isDisposed = true;
             }
 
             // Call base.Dispose, passing parameter. 

@@ -42,6 +42,17 @@ namespace HalconMVVMStarter.Model
         /// <summary>
         /// No selection. This is used to toggle the selection so that a resets can be done regardless of the current setting.
         /// </summary>
+        Large,
+
+        /// <summary>
+        /// A Medium erosion.
+        /// </summary>
+        Medium,
+
+        /// <summary>
+        /// No erosion.
+        /// </summary>
+        NoErosion,
         None
     }
 }

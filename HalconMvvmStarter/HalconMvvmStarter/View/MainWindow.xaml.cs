@@ -19,7 +19,7 @@ namespace HalconMVVMStarter
     using ReactiveUI;
     using Rti.ViewROIManager;
 
-    using ViewModel = ViewModels.MainViewModel;
+    using ViewModel = ViewModels.DemoMainViewModel;
 
     /// <summary>
     /// Interaction logic for MainWindow.
@@ -78,16 +78,16 @@ namespace HalconMVVMStarter
             this.MainViewModel = new ViewModel();
             this.DataContext = this.MainViewModel;
 
-            // Uncomment this line to bind the Process button to the command of a 
-            // new ProcessViewModel created in MainViewModel.cs.
-            // Change "ProcessVM" to the name of the new ProcessViewModel.
-            ////this.BindCommand(this.MainViewModel, vm => vm.ProcessVM.Command, x => x.ProcessButton);
+            this.BindCommand(this.MainViewModel, vm => vm.BoundaryProcessVM.Command, x => x.ProcessButton);
 
             //// Note: To use radio buttons bound to an enumeration it is necessary to create the radio button group, 
-            //// add new values to the RadioButtonSelection enumeration (in Model.Enums.cs), bind the property 
-            //// of the Enum type in a view model, and to bind each radio button with a call to this.SetRadioButtonBinding.
-            //// Template: this.SetRadioButtonBinding(this.Option1Button, this.MainViewModel.SelectChannelVM, "SelectedOptionProperty", "Option1");
-                        
+            //// the enumeration (in Model.Enums.cs), and the binding property of the Enum type in a view model, 
+            //// and to bind each radio button with a call to this.SetRadioButtonBinding.
+            this.SetRadioButtonBinding(this.LargeButton, this.MainViewModel.BoundaryProcessVM, "SelectedOption", "Large");
+            this.SetRadioButtonBinding(this.MediumButton, this.MainViewModel.BoundaryProcessVM, "SelectedOption", "Medium");
+            this.SetRadioButtonBinding(this.NoErosionButton, this.MainViewModel.BoundaryProcessVM, "SelectedOption", "NoErosion");
+
+            this.LargeButton.IsChecked = true; 
             this.dataGrid1.ItemsSource = this.MainViewModel.ProcessingResultsDataSet.Tables[0].DefaultView;
 
             this.disposeCollection.Add(this.Events().ContentRendered.Subscribe(_ =>
@@ -141,9 +141,24 @@ namespace HalconMVVMStarter
             this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.LoadImageVM.Display)
                 .Where(x => x.DisplayList.Count > 0)
                 .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                    {
+                        this.viewROIManager.ShowDisplayCollection(x);
+                    }));
+
+            this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.BoundaryProcessVM.Display)
+                .Where(x => x.DisplayList.Count > 0)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                    {
+                        this.viewROIManager.ShowDisplayCollection(x);
+                    }));
+
+            this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.ChangeColorProcessVM.Display)
+                .Where(x => x.DisplayList.Count > 0)
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x => this.viewROIManager.ShowDisplayCollection(x)));
 
-            //// Add Subscriptions to display collections here by duplicating the above code and changing the ViewModel.
 
             // Debug Displays
             this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.LoadImageVM.DebugDisplay)
@@ -151,7 +166,15 @@ namespace HalconMVVMStarter
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x => this.viewROIManager.ShowDisplayCollection(x)));
 
-            //// Add Subscriptions to debug display collections here by duplicating the above code and changing the ViewModel.
+            this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.BoundaryProcessVM.DebugDisplay)
+                .Where(x => x.DisplayList.Count > 0)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => this.viewROIManager.ShowDisplayCollection(x)));
+
+            this.disposeCollection.Add(this.WhenAnyValue(x => x.MainViewModel.ChangeColorProcessVM.DebugDisplay)
+                .Where(x => x.DisplayList.Count > 0)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => this.viewROIManager.ShowDisplayCollection(x)));
 
             this.disposeCollection.Add(this.MainViewModel.MenuItems.ItemsAdded
                 .Where(_ => this.viewROIManager.LocHWindowContol != null)

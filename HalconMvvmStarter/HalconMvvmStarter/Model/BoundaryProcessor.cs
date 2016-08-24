@@ -9,7 +9,6 @@ namespace HalconMVVMStarter.Model
     using System;
     using HalconDotNet;
     using ReactiveUI;
-    using RTI.DisplayUtilities;
 
     /// <summary>
     /// Processor class for Finding and processing a wafer boundary.
@@ -27,6 +26,26 @@ namespace HalconMVVMStarter.Model
         /// Stores the loaded unprocessed image. 
         /// </summary>
         private HImage image = new HImage();
+
+        /// <summary>
+        /// Stores a value indicating whether the class has been disposed. 
+        /// </summary>
+        private bool isDisposed = false;
+
+        /// <summary>
+        /// Stores the radio button selection.
+        /// </summary>
+        private RadioButtonSelection selectedOption = RadioButtonSelection.Large;
+
+        /// <summary>
+        /// Stores the dilation size.
+        /// </summary>
+        private double dilationSize = 400.5;
+
+        /// <summary>
+        /// Stores the intermediate processed region. 
+        /// </summary>
+        private HRegion processedRegion = new HRegion();
         
         #endregion
 
@@ -38,6 +57,8 @@ namespace HalconMVVMStarter.Model
         public BoundaryProcessor()
             : base()
         {
+            this.DisposeCollection.Add(this.WhenAnyValue(x => x.SelectedOption)
+                .Subscribe(x => this.SelectedOptionToDilationSize(x))); 
         }
 
         #endregion
@@ -80,6 +101,22 @@ namespace HalconMVVMStarter.Model
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected channel value. Non-reactive.
+        /// </summary>
+        public RadioButtonSelection SelectedOption
+        {
+            get
+            {
+                return this.selectedOption;
+            }
+
+            set
+            {
+                this.RaiseAndSetIfChanged(ref this.selectedOption, value);
+            }
+        }         
+
         #endregion
 
         #region public methods
@@ -102,7 +139,7 @@ namespace HalconMVVMStarter.Model
                     this.FindBoundary();
                     if (this.ErrorCode == ProcessingErrorCode.NoError)
                     {
-                        result.ResultsCollection.Add("Area", this.CircularizeAndShrinkRegion(this.WaferRegion));
+                        result.ResultsCollection.Add("Area", this.CircularizeAndShrinkRegion(this.processedRegion));
                     }
                 }
 
@@ -115,6 +152,10 @@ namespace HalconMVVMStarter.Model
                 // If an exception gets here it is unexpected. 
                 result.StatusCode = ProcessingErrorCode.UndefinedError;
                 result.ErrorMessage = "An error occurred during processing: " + ex.Message;
+            }
+            finally
+            {
+                this.processedRegion.Dispose();
             }
 
             return result;
@@ -130,7 +171,7 @@ namespace HalconMVVMStarter.Model
         /// <param name="disposing">A boolean value indicating whether the class is being disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
@@ -149,7 +190,12 @@ namespace HalconMVVMStarter.Model
                     this.image.Dispose();
                 }
 
-                this.IsDisposed = true;
+                if (this.processedRegion != null)
+                {
+                    this.processedRegion.Dispose();
+                }
+
+                this.isDisposed = true;
             }
 
             // Call base.Dispose, passing parameter. 
@@ -158,7 +204,7 @@ namespace HalconMVVMStarter.Model
 
         #endregion Protected Methods
 
-        #region Private Methods
+        #region Private Methods       
 
         /// <summary>
         /// Example test method 1 for the Process call.
@@ -182,7 +228,7 @@ namespace HalconMVVMStarter.Model
                 largestRegion = connectedRgn.SelectShapeStd("max_area", 0.0);
 
                 // System.Threading.Thread.Sleep(2000); // Does not block. 
-                this.WaferRegion = largestRegion.ShapeTrans("convex");
+                this.processedRegion = largestRegion.ShapeTrans("convex");
 
                 // Debug display test. 
                 // Uncomment and block processed display in View to see the debug output. 
@@ -230,7 +276,15 @@ namespace HalconMVVMStarter.Model
                 // System.Threading.Thread.Sleep(2000); // Does not block. 
                 // throw new Exception("Test Exception"); 
                 circleRegion = region.ShapeTrans("circle");
-                this.WaferRegion = circleRegion.ErosionCircle(400.5);
+                if (this.dilationSize > 0)
+                {
+                    this.WaferRegion = circleRegion.ErosionCircle(this.dilationSize);    // (400.5);
+                }
+                else
+                {
+                    this.WaferRegion = circleRegion.CopyObj(1, -1);
+                }
+
                 area = this.waferRegion.AreaCenter(out unusedDouble, out unusedDouble);
             }
             catch (HalconException)
@@ -249,6 +303,26 @@ namespace HalconMVVMStarter.Model
             }
 
             return area;
+        }
+
+        /// <summary>
+        /// Sets the dilation size according to the selected enumeration.
+        /// </summary>
+        /// <param name="selection">The selected enumeration.</param>
+        private void SelectedOptionToDilationSize(RadioButtonSelection selection)
+        {
+            switch (selection)
+            {
+                case RadioButtonSelection.Large:
+                    this.dilationSize = 400.5;
+                    break;
+                case RadioButtonSelection.Medium:
+                    this.dilationSize = 100.5;
+                    break;
+                case RadioButtonSelection.NoErosion:
+                    this.dilationSize = 0.0;
+                    break;
+            }
         }
 
         #endregion

@@ -14,7 +14,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200" />
             <ColumnDefinition Width="388*"/>
-        </Grid.ColumnDefinitions>        
+        </Grid.ColumnDefinitions>
         <DockPanel LastChildFill="False" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Name="stackPanel1"  
                     Background ="CadetBlue" Grid.RowSpan="2">
             <Button DockPanel.Dock="Top" Content="Load Image" Height="31" Name="buttonLoadImage" 
@@ -22,17 +22,24 @@
                     Margin="3" HorizontalContentAlignment="Center" >
             </Button>
             <DataGrid AutoGenerateColumns="True" Height="181" Name="dataGrid1" DockPanel.Dock="Bottom" Margin="3,0,3,3"
-                      CanUserAddRows="False" ColumnWidth="*">                
+                      CanUserAddRows="False" ColumnWidth="*">
             </DataGrid>
             <Button Name="ProcessButton" Content="Process" DockPanel.Dock="Top" Height="35" Margin="3" VerticalAlignment="Top" Width="194"
                     HorizontalContentAlignment="Center"/>
+            <GroupBox Header="Erosion " Height="75" Margin="45,10,0,0" VerticalAlignment="Top" Width="113" >
+                <StackPanel Height="50" VerticalAlignment="Top">
+                    <RadioButton Name="LargeButton" Content="Large"  HorizontalAlignment="Left" Height="18" Margin="10,0,0,0"  GroupName="1"/>
+                    <RadioButton Name="MediumButton" Content="Medium" HorizontalAlignment="Left" Height="18" Margin="10,0,0,0"  GroupName="1"/>
+                    <RadioButton Name="NoErosionButton" Content="NoErosion"   HorizontalAlignment="Left" Height="18" Margin="10,0,0,0"  GroupName="1"/>
+                </StackPanel>
+            </GroupBox>
         </DockPanel>
         <Border Grid.Column="1" Grid.Row="1" Name="ImageBorder" >
             <my:HWindowControlWPF Name="hWindowControlWPF1"/>
-        </Border>        
+        </Border>
         <DockPanel Grid.Column="1" HorizontalAlignment="Stretch" Name="toolBarPanel1" VerticalAlignment="Stretch" 
                    Background ="White" Width="Auto" Height="27" >
-            <ComboBox Name="comboboxZoom" SelectedIndex="10" Width="70" HorizontalAlignment="Left" Margin="0,0,0,0"> 
+            <ComboBox Name="comboboxZoom" SelectedIndex="10" Width="70" HorizontalAlignment="Left" Margin="0,0,0,0">
                 <ComboBoxItem Content="6400%"></ComboBoxItem>
                 <ComboBoxItem Content="3200%"></ComboBoxItem>
                 <ComboBoxItem Content="1600%"></ComboBoxItem>
@@ -44,7 +51,7 @@
                 <ComboBoxItem Content="50%"></ComboBoxItem>
                 <ComboBoxItem Content="33%"></ComboBoxItem>
                 <ComboBoxItem Content="Fit"></ComboBoxItem>
-            </ComboBox>            
+            </ComboBox>
             <TextBlock 
                 Text="{Binding Path=LoadImageVM.FileName, UpdateSourceTrigger=PropertyChanged}"                
                 Background="White" Name="TextBlockFileName" HorizontalAlignment="Stretch" 
@@ -53,5 +60,5 @@
         <Label Content="{Binding Path=StatusText, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" 
                Height="20" HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="label1" VerticalAlignment="Top" 
                Background="LightGreen" FontSize="12" Padding="5,2,5,5" />
-    </Grid> 
+    </Grid>
 </Window>

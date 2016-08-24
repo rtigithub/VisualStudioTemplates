@@ -85,6 +85,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\reactiveui-events.6.5.0\lib\net45\ReactiveUI.Events.dll</HintPath>
     </Reference>
+    <Reference Include="Rti.Library, Version=1.0.6080.23865, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Library\Rti.Library.dll</HintPath>
+    </Reference>
     <Reference Include="Splat, Version=1.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Splat.1.6.2\lib\Net45\Splat.dll</HintPath>
@@ -132,6 +136,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\BoundaryProcessor.cs" />
+    <Compile Include="Model\ChangeColorProcessor.cs" />
+    <Compile Include="ViewModels\BoundaryProcessViewModel.cs" />
     <Compile Include="Model\Enums.cs" />
     <Compile Include="Model\IProcessingResult.cs" />
     <Compile Include="Model\LoadImageProcessor.cs" />
@@ -143,10 +150,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="ViewModels\ChangeColorProcessViewModel.cs" />
     <Compile Include="Model\IProcessor.cs" />
     <Compile Include="ViewModels\IMainViewModel.cs" />
     <Compile Include="ViewModels\LoadProcessViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\DemoMainViewModel.cs" />
     <Compile Include="ViewModels\MainViewModelBase.cs" />
     <Compile Include="ViewModels\MenuItemVM.cs" />
     <Compile Include="ViewModels\ProcessViewModelBase.cs" />
@@ -180,7 +188,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="Help\Rti.chm" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -206,7 +213,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Library\Rti.Library.dll" />
+    <None Include="Library\Rti.Library.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

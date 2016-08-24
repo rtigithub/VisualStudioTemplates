@@ -12,7 +12,8 @@ namespace HalconMVVMStarter.ViewModels
     using HalconDotNet;
     using Model;
     using ReactiveUI;
-    using RTI.DisplayUtilities;
+    using Rti.ViewRoiCore; 
+    using Rti.DisplayUtilities;
 
     /// <summary>
     /// ProcessorViewModel class for border processing. Demo. 
@@ -31,6 +32,11 @@ namespace HalconMVVMStarter.ViewModels
         /// This is only for demonstrating output capabilities. 
         /// </summary>
         private int itemCount = 0;
+
+        /// <summary>
+        /// A boolean value indicating that the class is disposed. 
+        /// </summary>
+        private bool isDisposed = false;
 
         #endregion
 
@@ -118,6 +124,22 @@ namespace HalconMVVMStarter.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected option. 
+        /// </summary>
+        public RadioButtonSelection SelectedOption
+        {
+            get
+            {
+                return this.Processor.SelectedOption;
+            }
+
+            set
+            {                
+                this.Processor.SelectedOption = value;
+            }
+        }
+
         #endregion
 
         #region public methods
@@ -144,13 +166,12 @@ namespace HalconMVVMStarter.ViewModels
         {
             DisplayCollection tempDC = new DisplayCollection();
             tempDC.ClearDisplayFirst = true;
-
-            tempDC.AddDisplayObject(this.Processor.Image.CopyObj(1, -1));
-            tempDC.AddDisplayObject(
+            tempDC.AddDisplayObject(this.MainViewModelRef.LoadImageVM.Image.CopyObj(1, -1));
+            tempDC.AddDisplayObject(                 
                 this.Processor.WaferRegion.CopyObj(1, -1),
                 this.MainViewModelRef.ChangeColorProcessVM.CurrentDisplayColor,
                 1,
-                "margin");
+                DrawModes.Margin);
 
             return tempDC;
         }
@@ -161,16 +182,17 @@ namespace HalconMVVMStarter.ViewModels
         /// <param name="disposing">A boolean value indicating whether the class is being disposed.</param>
         protected override void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!this.isDisposed)
             {
                 if (disposing)
                 {
                     //// Dispose of managed resorces here. 
+                    this.processingResults.Dispose();
                 }
 
                 //// Dispose of unmanaged resorces here.
 
-                this.IsDisposed = true;
+                this.isDisposed = true;
             }
 
             // Call base.Dispose, passing parameter. 
